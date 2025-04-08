@@ -24,6 +24,9 @@ import {
 import { Input } from "@/app/_components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { NumericFormat } from "react-number-format";
+
+<NumericFormat value="20020220" allowLeadingZeros thousandSeparator="," />;
 
 const formSchema = z.object({
   name: z.string().trim().min(1, { message: "Nome é obrigatório" }),
@@ -31,7 +34,10 @@ const formSchema = z.object({
     .number()
     .int()
     .min(0.01, { message: "Preço deve ser maior que zero" }),
-  stock: z.number().min(0, { message: "Quantidade deve ser maior que zero" }),
+  stock: z.coerce
+    .number()
+    .positive({ message: "Quantidade deve ser positivo" })
+    .min(0, { message: "Quantidade deve ser maior que zero" }),
 });
 
 type FormSchema = z.infer<typeof formSchema>;
@@ -89,7 +95,21 @@ const AddProductButton = () => {
                 <FormItem>
                   <FormLabel>Nome do produto</FormLabel>
                   <FormControl>
-                    <Input placeholder="Digite o preço do produto" {...field} />
+                    <NumericFormat
+                      placeholder="Digite o preço do produto"
+                      thousandSeparator="."
+                      decimalSeparator=","
+                      fixedDecimalScale
+                      decimalScale={2}
+                      prefix="R$ "
+                      allowNegative={false}
+                      customInput={Input}
+                      onValueChange={(value) => {
+                        field.onChange(value.floatValue);
+                      }}
+                      {...field}
+                      onChange={() => {}}
+                    />
                   </FormControl>
 
                   <FormMessage />
@@ -105,6 +125,7 @@ const AddProductButton = () => {
                   <FormLabel>Nome do produto</FormLabel>
                   <FormControl>
                     <Input
+                      type="number"
                       placeholder="Digite o estoque do produto"
                       {...field}
                     />
@@ -118,7 +139,7 @@ const AddProductButton = () => {
               <DialogClose asChild>
                 <Button variant="secondary">Cancelar</Button>
               </DialogClose>
-              <Button type="submit">Criar</Button>
+              <Button type="submit">Salvar</Button>
             </DialogFooter>
           </form>
         </Form>
