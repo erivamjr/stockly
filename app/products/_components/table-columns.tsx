@@ -19,6 +19,11 @@ import {
   DropdownMenuTrigger,
 } from "../../_components/ui/dropdown-menu";
 import { Button } from "../../_components/ui/button";
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+} from "../../_components/ui/alert-dialog";
+import DeleteDialog from "./delete-dialog";
 
 const getStatusLabel = (status: string) => {
   if (status === "IN_STOCK") return "Em estoque";
@@ -65,30 +70,35 @@ export const productTableColumns: ColumnDef<Product>[] = [
     cell: ({ row }) => {
       const product = row.original;
       return (
-        <DropdownMenu>
-          <DropdownMenuTrigger>
-            <Button variant="ghost">
-              <MoreHorizontalIcon size={16} />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuLabel>Ações</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              className="gap-1.5"
-              onClick={() => navigator.clipboard.writeText(product.id)}
-            >
-              <ClipboardCopyIcon size={16} /> Copiar ID
-            </DropdownMenuItem>
-            <DropdownMenuItem className="gap-1.5">
-              <EditIcon size={16} /> Editar
-            </DropdownMenuItem>
-            <DropdownMenuItem className="gap-1.5">
-              <TrashIcon size={16} />
-              Deletar
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <AlertDialog>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost">
+                <MoreHorizontalIcon size={16} />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuLabel>Ações</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                className="gap-1.5"
+                onClick={() => navigator.clipboard.writeText(product.id)}
+              >
+                <ClipboardCopyIcon size={16} /> Copiar ID
+              </DropdownMenuItem>
+              <DropdownMenuItem className="gap-1.5">
+                <EditIcon size={16} /> Editar
+              </DropdownMenuItem>
+              <AlertDialogTrigger>
+                <DropdownMenuItem className="gap-1.5">
+                  <TrashIcon size={16} />
+                  Deletar
+                </DropdownMenuItem>
+              </AlertDialogTrigger>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <DeleteDialog productId={product.id} />
+        </AlertDialog>
       );
     },
   },
