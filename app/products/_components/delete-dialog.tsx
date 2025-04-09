@@ -15,7 +15,6 @@ interface DeleteProductProps {
 }
 
 const DeleteDialog = ({ productId }: DeleteProductProps) => {
-  console.log(productId);
   const handleContinueClick = async () => {
     try {
       await deleteProduct({ id: productId });

@@ -23,28 +23,35 @@ import { Loader2Icon } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import {
-  CreateProductSchema,
-  createProductSchema,
-} from "../../_actions/product/create-product/schema";
-import { createProduct } from "../../_actions/product/create-product";
+  UpsertProductSchema,
+  upsertProductSchema,
+} from "../../_actions/product/upsert-product/schema";
+import { upsertProduct } from "../../_actions/product/upsert-product";
 
 interface UpsertProductDialogProps {
+  defaultValues?: UpsertProductSchema;
   onSuccess?: () => void;
 }
 
-const UpsertProductDialog = ({ onSuccess }: UpsertProductDialogProps) => {
-  const form = useForm<CreateProductSchema>({
-    resolver: zodResolver(createProductSchema),
-    defaultValues: {
+const UpsertProductDialog = ({
+  defaultValues,
+  onSuccess,
+}: UpsertProductDialogProps) => {
+  const form = useForm<UpsertProductSchema>({
+    resolver: zodResolver(upsertProductSchema),
+    defaultValues: defaultValues ?? {
+      id: "",
       name: "",
       price: 0,
       stock: 1,
     },
   });
 
-  const onSubmit = async (data: CreateProductSchema) => {
+  const isEditing = !!defaultValues;
+
+  const onSubmit = async (data: UpsertProductSchema) => {
     try {
-      await createProduct(data);
+      await upsertProduct({ ...data, id: defaultValues?.id });
       onSuccess?.();
       //setDialogIsOpen(false);
       form.reset();
@@ -56,7 +63,7 @@ const UpsertProductDialog = ({ onSuccess }: UpsertProductDialogProps) => {
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <DialogHeader>
-            <DialogTitle>Criar Produto</DialogTitle>
+            <DialogTitle>{isEditing ? "Editar" : "Criar"} Produto</DialogTitle>
             <DialogDescription>Insira as informações abaixo</DialogDescription>
           </DialogHeader>
           <FormField

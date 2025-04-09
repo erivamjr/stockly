@@ -24,6 +24,9 @@ import {
   AlertDialogTrigger,
 } from "../../_components/ui/alert-dialog";
 import DeleteDialog from "./delete-dialog";
+import { Dialog, DialogTrigger } from "@radix-ui/react-dialog";
+import UpsertProductDialog from "./upsert-product-dialog";
+import { useState } from "react";
 
 const getStatusLabel = (status: string) => {
   if (status === "IN_STOCK") return "Em estoque";
@@ -38,7 +41,15 @@ export const productTableColumns: ColumnDef<Product>[] = [
   {
     accessorKey: "price",
     header: "Valor Unitário",
+    cell: ({ row }) => {
+      const product = row.original;
+      return Intl.NumberFormat("pt-BR", {
+        style: "currency",
+        currency: "BRL",
+      }).format(Number(product.price));
+    },
   },
+
   {
     accessorKey: "stock",
     header: "Estoque",
@@ -68,36 +79,50 @@ export const productTableColumns: ColumnDef<Product>[] = [
     accessorKey: "actions",
     header: "Ações",
     cell: ({ row }) => {
+      const [editDialogOpen, setEditDialogOpen] = useState(false);
       const product = row.original;
       return (
         <AlertDialog>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost">
-                <MoreHorizontalIcon size={16} />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuLabel>Ações</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                className="gap-1.5"
-                onClick={() => navigator.clipboard.writeText(product.id)}
-              >
-                <ClipboardCopyIcon size={16} /> Copiar ID
-              </DropdownMenuItem>
-              <DropdownMenuItem className="gap-1.5">
-                <EditIcon size={16} /> Editar
-              </DropdownMenuItem>
-              <AlertDialogTrigger>
-                <DropdownMenuItem className="gap-1.5">
-                  <TrashIcon size={16} />
-                  Deletar
+          <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost">
+                  <MoreHorizontalIcon size={16} />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuLabel>Ações</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  className="gap-1.5"
+                  onClick={() => navigator.clipboard.writeText(product.id)}
+                >
+                  <ClipboardCopyIcon size={16} /> Copiar ID
                 </DropdownMenuItem>
-              </AlertDialogTrigger>
-            </DropdownMenuContent>
-          </DropdownMenu>
-          <DeleteDialog productId={product.id} />
+                <DialogTrigger asChild>
+                  <DropdownMenuItem className="gap-1.5">
+                    <EditIcon size={16} /> Editar
+                  </DropdownMenuItem>
+                </DialogTrigger>
+                <AlertDialogTrigger>
+                  <DropdownMenuItem className="gap-1.5">
+                    <TrashIcon size={16} />
+                    Deletar
+                  </DropdownMenuItem>
+                </AlertDialogTrigger>
+              </DropdownMenuContent>
+            </DropdownMenu>
+            <UpsertProductDialog
+              defaultValues={{
+                id: product.id,
+                name: product.name,
+                price: Number(product.price),
+                stock: product.stock,
+              }}
+              onSuccess={() => setEditDialogOpen(false)}
+            />
+            <DeleteDialog productId={product.id} />
+          </Dialog>
         </AlertDialog>
       );
     },
