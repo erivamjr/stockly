@@ -4,9 +4,10 @@ import { db } from "../../_lib/prisma";
 import { unstable_cache } from "next/cache";
 
 export const getProducts = async (): Promise<Product[]> => {
-  return db.product.findMany();
+  return db.product.findMany({});
 };
 
-export const cachedGetProducts = unstable_cache(getProducts, ["get-products"], {
+export const cachedGetProducts = unstable_cache(getProducts, ["getProducts"], {
+  tags: ["get-products"],
   revalidate: 60,
 });
