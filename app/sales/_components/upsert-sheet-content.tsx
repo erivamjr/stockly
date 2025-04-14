@@ -4,6 +4,7 @@ import { z } from "zod";
 import {
   SheetContent,
   SheetDescription,
+  SheetFooter,
   SheetHeader,
   SheetTitle,
 } from "../../_components/ui/sheet";
@@ -20,8 +21,8 @@ import {
 import { Input } from "../../_components/ui/input";
 import Combobox, { ComboboxOptionProps } from "../../_components/ui/combobox";
 import { Button } from "../../_components/ui/button";
-import { PlusIcon } from "lucide-react";
-import { useMemo, useState } from "react";
+import { CheckIcon, PlusIcon } from "lucide-react";
+import { Dispatch, SetStateAction, useMemo, useState } from "react";
 import { Product } from "@prisma/client";
 import {
   Table,
@@ -35,6 +36,8 @@ import {
 } from "../../_components/ui/table";
 import { formatCurrency } from "../../_helpers/currency";
 import SalesTableDropdownMenu from "./sales-table-dropdown-menu";
+import { createSale } from "../../_actions/sale/create-sale";
+import { toast } from "sonner";
 
 const formSchema = z.object({
   productId: z.string().cuid({
@@ -51,6 +54,7 @@ type FormSchema = z.infer<typeof formSchema>;
 interface UpsertSheetContentProps {
   products: Product[];
   productOptions: ComboboxOptionProps[];
+  setSheetIsOpen: Dispatch<SetStateAction<boolean>>;
 }
 
 interface SelectedProduct {
@@ -63,6 +67,7 @@ interface SelectedProduct {
 const UpsertSheetContent = ({
   products,
   productOptions,
+  setSheetIsOpen,
 }: UpsertSheetContentProps) => {
   const [selectedProduct, setSelectedProduct] = useState<SelectedProduct[]>([]);
   const form = useForm<FormSchema>({
@@ -129,6 +134,21 @@ const UpsertSheetContent = ({
     setSelectedProduct((products) => {
       return products.filter((product) => product.id !== productId);
     });
+  };
+
+  const onSubmitSales = async () => {
+    try {
+      await createSale({
+        products: selectedProduct.map((product) => ({
+          id: product.id,
+          quantity: product.quantity,
+        })),
+      });
+      toast.success("Venda realizada com sucesso!");
+      setSheetIsOpen(false);
+    } catch (error) {
+      toast.error("Erro ao realizar venda!");
+    }
   };
 
   return (
@@ -219,6 +239,17 @@ const UpsertSheetContent = ({
           </TableRow>
         </TableFooter>
       </Table>
+      <SheetFooter className="pt-6">
+        <Button
+          type="submit"
+          className="w-full gap-2"
+          disabled={!selectedProduct.length}
+          onClick={onSubmitSales}
+        >
+          <CheckIcon size={20} />
+          Finalizar venda
+        </Button>
+      </SheetFooter>
     </SheetContent>
   );
 };
