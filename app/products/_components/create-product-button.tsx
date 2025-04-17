@@ -1,10 +1,10 @@
 "use client";
 
 import { PlusIcon } from "lucide-react";
-import { Button } from "@/app/_components/ui/button";
-import { Dialog, DialogTrigger } from "@/app/_components/ui/dialog";
 import { useState } from "react";
 import UpsertProductDialog from "./upsert-product-dialog";
+import { Dialog, DialogTrigger } from "../../_components/ui/dialog";
+import { Button } from "../../_components/ui/button";
 
 {
   /* <NumericFormat value="20020220" allowLeadingZeros thousandSeparator="," />; */

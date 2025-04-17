@@ -1,17 +1,17 @@
 "use client";
 
-import { Product } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "../../_components/ui/badge";
 import { CircleIcon } from "lucide-react";
 import ProductTableDropdownMenu from "./product-table-dropdown-menu";
+import { ProductDto } from "../../_data-access/product/get-products";
 
 const getStatusLabel = (status: string) => {
   if (status === "IN_STOCK") return "Em estoque";
   return "Fora de estoque";
 };
 
-export const productTableColumns: ColumnDef<Product>[] = [
+export const productTableColumns: ColumnDef<ProductDto>[] = [
   {
     accessorKey: "name",
     header: "Produto",

@@ -1,7 +1,8 @@
 import { z } from "zod";
 
 export const upsertProductSchema = z.object({
-  id: z.string().cuid().optional(),
+  id: z.union([z.string().cuid(), z.literal("")]).optional(),
+
   name: z.string().trim().min(1, { message: "Nome é obrigatório" }),
   price: z
     .number()

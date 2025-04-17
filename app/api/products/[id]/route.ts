@@ -6,7 +6,7 @@ export async function GET(
   { params }: { params: { id: string } },
 ) {
   const searchParams = request.nextUrl.searchParams;
-  const query = searchParams.get("teste") || null;
+  const query = searchParams.get("teste");
   console.log("Query: ", query);
   const { id } = params;
   const product = await db.product.findUnique({
