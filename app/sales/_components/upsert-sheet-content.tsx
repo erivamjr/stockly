@@ -74,10 +74,8 @@ const UpsertSheetContent = ({
   const [selectedProduct, setSelectedProduct] = useState<SelectedProduct[]>([]);
   const { execute: executeCreateSale } = useAction(createSale, {
     onError: ({ error: { validationErrors, serverError } }) => {
-      const flattenedErrors = flattenValidationErrors(
-        serverError || validationErrors,
-      );
-      toast.error(flattenedErrors.formErrors[0]);
+      const flattenedErrors = flattenValidationErrors(validationErrors);
+      toast.error(serverError || flattenedErrors.formErrors[0]);
     },
     onSuccess: () => {
       toast.success("Venda realizada com sucesso!");
