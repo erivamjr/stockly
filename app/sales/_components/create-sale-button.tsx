@@ -6,6 +6,7 @@ import { ComboboxOptionProps } from "../../_components/ui/combobox";
 import { Sheet, SheetTrigger } from "../../_components/ui/sheet";
 import UpsertSheetContent from "./upsert-sheet-content";
 import { useState } from "react";
+import { PlusIcon } from "lucide-react";
 
 interface CreateSaleButtonProps {
   products: Product[];
@@ -16,7 +17,10 @@ const CreateSaleButton = (props: CreateSaleButtonProps) => {
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
-        <Button>Nova venda</Button>
+        <Button>
+          <PlusIcon size={20} className="gap-2" />
+          Nova venda
+        </Button>
       </SheetTrigger>
       <UpsertSheetContent setSheetIsOpen={setOpen} {...props} />
     </Sheet>
