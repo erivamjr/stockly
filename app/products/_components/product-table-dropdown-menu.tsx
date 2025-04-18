@@ -22,6 +22,7 @@ import {
 import DeleteDialog from "./delete-dialog";
 import UpsertProductDialog from "./upsert-product-dialog";
 import { Dialog, DialogTrigger } from "../../_components/ui/dialog";
+import { toast } from "sonner";
 
 interface ProductTableDropdownMenuProps {
   product: Product;
@@ -31,6 +32,11 @@ const ProductTableDropdownMenu = ({
   product,
 }: ProductTableDropdownMenuProps) => {
   const [editDialogIsOpen, setEditDialogIsOpen] = useState(false);
+
+  const handleCopyToClipboardClick = () => {
+    navigator.clipboard.writeText(product.id);
+    toast.success("ID copiado para a área de transferência.");
+  };
 
   return (
     <AlertDialog>
@@ -46,7 +52,7 @@ const ProductTableDropdownMenu = ({
             <DropdownMenuSeparator />
             <DropdownMenuItem
               className="gap-1.5"
-              onClick={() => navigator.clipboard.writeText(product.id)}
+              onClick={handleCopyToClipboardClick}
             >
               <ClipboardCopyIcon size={16} /> Copiar ID
             </DropdownMenuItem>
