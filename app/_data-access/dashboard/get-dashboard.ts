@@ -2,7 +2,7 @@ import "server-only";
 
 import { db } from "../../_lib/prisma";
 import dayjs from "dayjs";
-import { ProductStatusDto } from "../../_data-access/product/get-products";
+import { ProductStatusDto } from "../product/get-products";
 
 export interface DayTotalRevenueProps {
   day: string;
@@ -54,7 +54,6 @@ export const getDashboard = async (): Promise<DashboardDto> => {
       totalRevenue: Number(dayTotalRevenue._sum.unitPrice) ?? 0,
     });
   }
-  console.log("daysTotalRevenue", totalLast14DaysRevenue);
 
   const totalRevenuePromise = db.saleProduct.aggregate({
     _sum: {

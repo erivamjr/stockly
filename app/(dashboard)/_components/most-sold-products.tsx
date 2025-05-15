@@ -1,4 +1,4 @@
-import { MostSoldProductDto } from "../../_actions/dashboard/get-dashboard";
+import { MostSoldProductDto } from "../../_data-access/dashboard/get-dashboard";
 import ProductStatusBadge from "../../_components/product-status-badge";
 import { formatCurrency } from "../../_helpers/currency";
 

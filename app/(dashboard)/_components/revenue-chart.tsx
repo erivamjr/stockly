@@ -1,7 +1,7 @@
 "use client";
 
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
-import { DayTotalRevenueProps } from "../../_actions/dashboard/get-dashboard";
+import { DayTotalRevenueProps } from "../../_data-access/dashboard/get-dashboard";
 import { ChartConfig, ChartContainer } from "../../_components/ui/chart";
 
 const chartConfig: ChartConfig = {
