@@ -13,6 +13,7 @@ import TodayRevenueCard from "./_components/today-revenue-card";
 import TotalSalesCard from "./_components/total-sales-card";
 import TotalInStockCard from "./_components/total-in-stock-card";
 import TotalProductsCard from "./_components/total-products-card";
+import Last14DaysRevenue from "./_components/last-14-days-revenue";
 
 const Home = async () => {
   const { totalLast14DaysRevenue, mostSoldProducts } = await getDashboard();
@@ -50,12 +51,9 @@ const Home = async () => {
       </div>
 
       <div className="grid min-h-0 grid-cols-[minmax(0,2fr),minmax(0,1fr)] gap-6">
-        <div className="flex h-full flex-col overflow-hidden rounded-xl bg-white p-6">
-          <p className="text-lg font-semibold text-slate-900">Receita</p>
-          <p className="text-sm text-slate-500">Últimos 14 dias</p>
-
-          <RevenueChart data={totalLast14DaysRevenue} />
-        </div>
+        <Suspense fallback={<SummaryCardSkeleton />}>
+          <Last14DaysRevenue />
+        </Suspense>
 
         <div className="flex h-full flex-col overflow-hidden rounded-xl bg-white">
           <p className="p-6 text-lg font-semibold text-slate-900">
