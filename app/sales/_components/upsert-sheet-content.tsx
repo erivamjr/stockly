@@ -1,6 +1,5 @@
 "use client";
 
-import { z } from "zod";
 import {
   SheetContent,
   SheetDescription,
@@ -22,7 +21,7 @@ import { Input } from "../../_components/ui/input";
 import Combobox, { ComboboxOptionProps } from "../../_components/ui/combobox";
 import { Button } from "../../_components/ui/button";
 import { CheckIcon, PlusIcon } from "lucide-react";
-import { Dispatch, SetStateAction, useMemo, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
 import {
   Table,
   TableBody,
@@ -40,6 +39,7 @@ import { toast } from "sonner";
 import { useAction } from "next-safe-action/hooks";
 import { flattenValidationErrors } from "next-safe-action";
 import { ProductDto } from "../../_data-access/product/get-products";
+import { z } from "zod";
 
 const formSchema = z.object({
   productId: z.string().cuid({
@@ -61,6 +61,7 @@ interface SelectedProduct {
 }
 
 interface UpsertSheetContentProps {
+  isOpen: boolean;
   saleId?: string;
   products: ProductDto[];
   productOptions: ComboboxOptionProps[];
@@ -69,6 +70,7 @@ interface UpsertSheetContentProps {
 }
 
 const UpsertSheetContent = ({
+  isOpen,
   saleId,
   products,
   productOptions,
@@ -95,6 +97,19 @@ const UpsertSheetContent = ({
       quantity: 1,
     },
   });
+
+  useEffect(() => {
+    if (!isOpen) {
+      form.reset();
+      setSelectedProduct([]);
+    }
+  }, [isOpen, form]);
+
+  useEffect(() => {
+    if (defaultSelectedProducts) {
+      setSelectedProduct(defaultSelectedProducts ?? []);
+    }
+  }, [defaultSelectedProducts]);
 
   const onSubmit = async (data: FormSchema) => {
     const seletedProduct = products.find(
