@@ -4,19 +4,19 @@ import Header, {
   HeaderTitle,
 } from "../_components/header";
 import { SummaryCardSkeleton } from "./_components/summary-card";
-import { getDashboard } from "../_data-access/dashboard/get-dashboard";
-import RevenueChart from "./_components/revenue-chart";
-import MostSoldProdutcItem from "./_components/most-sold-products";
 import TotalRevenueCard from "./_components/total-revenue-card";
 import { Suspense } from "react";
 import TodayRevenueCard from "./_components/today-revenue-card";
 import TotalSalesCard from "./_components/total-sales-card";
 import TotalInStockCard from "./_components/total-in-stock-card";
 import TotalProductsCard from "./_components/total-products-card";
-import Last14DaysRevenue from "./_components/last-14-days-revenue";
+import { Skeleton } from "../_components/ui/skeleton";
+import MostSoldProducts, {
+  MostSoldProductsSkeleton,
+} from "./_components/most-sold-products";
+import Last14DaysRevenueCard from "./_components/last-14-days-revenue";
 
 const Home = async () => {
-  const { totalLast14DaysRevenue, mostSoldProducts } = await getDashboard();
   return (
     <div className="m-8 flex w-full flex-col space-y-8 rounded-lg">
       <Header>
@@ -51,21 +51,22 @@ const Home = async () => {
       </div>
 
       <div className="grid min-h-0 grid-cols-[minmax(0,2fr),minmax(0,1fr)] gap-6">
-        <Suspense fallback={<SummaryCardSkeleton />}>
-          <Last14DaysRevenue />
+        <Suspense
+          fallback={
+            <Skeleton className="bg-white">
+              <div className="space-y-2 p-6">
+                <Skeleton className="h-5 w-32" />
+                <Skeleton className="h-4 w-44" />
+              </div>
+            </Skeleton>
+          }
+        >
+          <Last14DaysRevenueCard />
         </Suspense>
 
-        <div className="flex h-full flex-col overflow-hidden rounded-xl bg-white">
-          <p className="p-6 text-lg font-semibold text-slate-900">
-            Produtos mais vendidos
-          </p>
-
-          <div className="mb-6 space-y-7 overflow-y-auto px-6 pb-6">
-            {mostSoldProducts.map((product) => (
-              <MostSoldProdutcItem key={product.productId} product={product} />
-            ))}
-          </div>
-        </div>
+        <Suspense fallback={<MostSoldProductsSkeleton />}>
+          <MostSoldProducts />
+        </Suspense>
       </div>
     </div>
   );
